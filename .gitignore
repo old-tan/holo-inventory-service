@@ -119,3 +119,6 @@ dist
 .sqlite
 
 lib/
+
+# upload
+uploads/
