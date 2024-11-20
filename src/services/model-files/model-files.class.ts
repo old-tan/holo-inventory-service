@@ -4,24 +4,24 @@ import { KnexService } from '@feathersjs/knex'
 import type { KnexAdapterParams, KnexAdapterOptions } from '@feathersjs/knex'
 
 import type { Application } from '../../declarations'
-import type { Uploads, UploadsData, UploadsPatch, UploadsQuery } from './uploads.schema'
+import type { ModelFiles, ModelFilesData, ModelFilesPatch, ModelFilesQuery } from './model-files.schema'
 
-export type { Uploads, UploadsData, UploadsPatch, UploadsQuery }
+export type { ModelFiles, ModelFilesData, ModelFilesPatch, ModelFilesQuery }
 
-export interface UploadsParams extends KnexAdapterParams<UploadsQuery> {}
+export interface ModelFilesParams extends KnexAdapterParams<ModelFilesQuery> {}
 
 // By default calls the standard Knex adapter service methods but can be customized with your own functionality.
-export class UploadsService<ServiceParams extends Params = UploadsParams> extends KnexService<
-  Uploads,
-  UploadsData,
-  UploadsParams,
-  UploadsPatch
+export class ModelFilesService<ServiceParams extends Params = ModelFilesParams> extends KnexService<
+  ModelFiles,
+  ModelFilesData,
+  ModelFilesParams,
+  ModelFilesPatch
 > {}
 
 export const getOptions = (app: Application): KnexAdapterOptions => {
   return {
     paginate: app.get('paginate'),
     Model: app.get('sqliteClient'),
-    name: 'uploads'
+    name: 'model-files'
   }
 }

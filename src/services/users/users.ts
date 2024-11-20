@@ -34,12 +34,22 @@ export const user = (app: Application) => {
   app.service(userPath).hooks({
     around: {
       all: [schemaHooks.resolveExternal(userExternalResolver), schemaHooks.resolveResult(userResolver)],
-      find: [authenticate('jwt')],
-      get: [authenticate('jwt')],
+      find: [
+        // authenticate('jwt')
+      ],
+      get: [
+        // authenticate('jwt')
+      ],
       create: [],
-      update: [authenticate('jwt')],
-      patch: [authenticate('jwt')],
-      remove: [authenticate('jwt')]
+      update: [
+        // authenticate('jwt')
+      ],
+      patch: [
+        // authenticate('jwt')
+      ],
+      remove: [
+        // authenticate('jwt')
+      ]
     },
     before: {
       all: [schemaHooks.validateQuery(userQueryValidator), schemaHooks.resolveQuery(userQueryResolver)],
