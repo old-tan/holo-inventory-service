@@ -4,11 +4,43 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
-import { uploadsClient } from './services/uploads/uploads.shared'
-export type { Uploads, UploadsData, UploadsQuery, UploadsPatch } from './services/uploads/uploads.shared'
+import { uploadFilesClient } from './services/upload-files/upload-files.shared'
+export type {
+  UploadFiles,
+  UploadFilesData,
+  UploadFilesQuery,
+  UploadFilesPatch
+} from './services/upload-files/upload-files.shared'
 
 import { userClient } from './services/users/users.shared'
 export type { User, UserData, UserQuery, UserPatch } from './services/users/users.shared'
+
+import { attributesClient } from './services/attributes/attributes.shared'
+export type {
+  Attributes,
+  AttributesData,
+  AttributesQuery,
+  AttributesPatch
+} from './services/attributes/attributes.shared'
+
+import { modelAttributesClient } from './services/model-attributes/model-attributes.shared'
+export type {
+  ModelAttributes,
+  ModelAttributesData,
+  ModelAttributesQuery,
+  ModelAttributesPatch
+} from './services/model-attributes/model-attributes.shared'
+
+import { modelFilesClient } from './services/model-files/model-files.shared'
+export type {
+  ModelFiles,
+  ModelFilesData,
+  ModelFilesQuery,
+  ModelFilesPatch
+} from './services/model-files/model-files.shared'
+
+import { modelsClient } from './services/models/models.shared'
+export type { Models, ModelsData, ModelsQuery, ModelsPatch } from './services/models/models.shared'
 
 export interface Configuration {
   connection: TransportConnection<ServiceTypes>
@@ -26,7 +58,7 @@ export type ClientApplication = Application<ServiceTypes, Configuration>
  * @see https://dove.feathersjs.com/api/client.html
  * @returns The Feathers client application
  */
-export const createClient = <Configuration = any>(
+export const createClient = <Configuration = any,>(
   connection: TransportConnection<ServiceTypes>,
   authenticationOptions: Partial<AuthenticationClientOptions> = {}
 ) => {
@@ -36,7 +68,11 @@ export const createClient = <Configuration = any>(
   client.configure(authenticationClient(authenticationOptions))
   client.set('connection', connection)
 
+  client.configure(modelsClient)
+  client.configure(modelFilesClient)
+  client.configure(modelAttributesClient)
+  client.configure(attributesClient)
   client.configure(userClient)
-  client.configure(uploadsClient)
+  client.configure(uploadFilesClient)
   return client
 }
