@@ -50,9 +50,18 @@ importers:
       '@koa/multer':
         specifier: ^3.0.2
         version: 3.0.2(multer@1.4.5-lts.1)
+      '@types/koa-mount':
+        specifier: ^4.0.5
+        version: 4.0.5
+      dayjs:
+        specifier: ^1.11.13
+        version: 1.11.13
       knex:
         specifier: 3.1.0
         version: 3.1.0(sqlite3@5.1.7)
+      koa-mount:
+        specifier: ^4.0.0
+        version: 4.0.0
       nanoid:
         specifier: ^5.0.8
         version: 5.0.8
@@ -590,6 +599,9 @@ packages:
   '@types/koa-compose@3.2.8':
     resolution: {integrity: sha512-4Olc63RY+MKvxMwVknCUDhRQX1pFQoBZ/lXcRLP69PQkEpze/0cr8LNqJQe5NFb/b19DWi2a5bTi2VAlQzhJuA==}
 
+  '@types/koa-mount@4.0.5':
+    resolution: {integrity: sha512-pV1njJ7r94iqAFzT9D5sGSYKUHFGudCLAnmr4WFli7V5tJf5MAgRQK9leTPJ4gjvgr+hnTf86fZsKoFN358c7w==}
+
   '@types/koa-qs@2.0.3':
     resolution: {integrity: sha512-HS4oAQaUKUZJPHggg3DeHiuUwSSotieNRuS2ZlUZO14216Fhf7QDNx8mjR/ZwXaSBr/R46KFtE0OAvsF3yP44A==}
 
@@ -997,6 +1009,9 @@ packages:
   cross-spawn@7.0.5:
     resolution: {integrity: sha512-ZVJrKKYunU38/76t0RMOulHOnUcbU9GbpWKAOZ0mhjr7CX6FVrH+4FrAapSOekrgFQ3f/8gwMEuIft0aKq6Hug==}
     engines: {node: '>= 8'}
+
+  dayjs@1.11.13:
+    resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
 
   debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
@@ -1604,6 +1619,10 @@ packages:
   koa-convert@2.0.0:
     resolution: {integrity: sha512-asOvN6bFlSnxewce2e/DK3p4tltyfC4VM7ZwuTuepI7dEQVcvpyFuBcEARu1+Hxg8DIwytce2n7jrZtRlPrARA==}
     engines: {node: '>= 10'}
+
+  koa-mount@4.0.0:
+    resolution: {integrity: sha512-rm71jaA/P+6HeCpoRhmCv8KVBIi0tfGuO/dMKicbQnQW/YJntJ6MnnspkodoA4QstMVEZArsCphmd0bJEtoMjQ==}
+    engines: {node: '>= 7.6.0'}
 
   koa-qs@3.0.0:
     resolution: {integrity: sha512-05IB5KirwMs3heWW26iTz46HuMAtrlrRMus/aNH1BRDocLyF/099EtCB0MIfQpRuT0TISvaTsWwSy2gctIWiGA==}
@@ -3037,6 +3056,10 @@ snapshots:
     dependencies:
       '@types/koa': 2.15.0
 
+  '@types/koa-mount@4.0.5':
+    dependencies:
+      '@types/koa': 2.15.0
+
   '@types/koa-qs@2.0.3':
     dependencies:
       '@types/koa': 2.15.0
@@ -3509,6 +3532,8 @@ snapshots:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
+
+  dayjs@1.11.13: {}
 
   debug@2.6.9:
     dependencies:
@@ -4185,6 +4210,13 @@ snapshots:
     dependencies:
       co: 4.6.0
       koa-compose: 4.1.0
+
+  koa-mount@4.0.0:
+    dependencies:
+      debug: 4.3.7
+      koa-compose: 4.1.0
+    transitivePeerDependencies:
+      - supports-color
 
   koa-qs@3.0.0:
     dependencies:

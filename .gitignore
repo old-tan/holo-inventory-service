@@ -122,3 +122,5 @@ lib/
 
 # upload
 uploads/
+
+.DS_Store
