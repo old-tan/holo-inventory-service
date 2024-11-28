@@ -10,8 +10,12 @@ import type { ModelFilesService } from './model-files.class'
 // Main data model schema
 export const modelFilesSchema = Type.Object(
   {
-    id: Type.Number(),
-    text: Type.String()
+    id: Type.String(),
+    model_id: Type.String(),
+    file_name: Type.String(),
+    url: Type.String(),
+    created_at: Type.String(),
+    updated_at: Type.String()
   },
   { $id: 'ModelFiles', additionalProperties: false }
 )
@@ -22,7 +26,7 @@ export const modelFilesResolver = resolve<ModelFiles, HookContext<ModelFilesServ
 export const modelFilesExternalResolver = resolve<ModelFiles, HookContext<ModelFilesService>>({})
 
 // Schema for creating new entries
-export const modelFilesDataSchema = Type.Pick(modelFilesSchema, ['text'], {
+export const modelFilesDataSchema = Type.Pick(modelFilesSchema, ['model_id', 'file_name', 'url'], {
   $id: 'ModelFilesData'
 })
 export type ModelFilesData = Static<typeof modelFilesDataSchema>
@@ -38,7 +42,12 @@ export const modelFilesPatchValidator = getValidator(modelFilesPatchSchema, data
 export const modelFilesPatchResolver = resolve<ModelFiles, HookContext<ModelFilesService>>({})
 
 // Schema for allowed query properties
-export const modelFilesQueryProperties = Type.Pick(modelFilesSchema, ['id', 'text'])
+export const modelFilesQueryProperties = Type.Pick(modelFilesSchema, [
+  // 'id',
+  'model_id',
+  'file_name',
+  'url'
+])
 export const modelFilesQuerySchema = Type.Intersect(
   [
     querySyntax(modelFilesQueryProperties),

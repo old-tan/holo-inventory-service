@@ -13,7 +13,7 @@ import {
   modelFilesQueryResolver
 } from './model-files.schema'
 
-import type { Application } from '../../declarations'
+import type { Application, HookContext } from '../../declarations'
 import { ModelFilesService, getOptions } from './model-files.class'
 import { modelFilesPath, modelFilesMethods } from './model-files.shared'
 
@@ -33,24 +33,24 @@ export const modelFiles = (app: Application) => {
   app.service(modelFilesPath).hooks({
     around: {
       all: [
-        schemaHooks.resolveExternal(modelFilesExternalResolver),
-        schemaHooks.resolveResult(modelFilesResolver)
+        // schemaHooks.resolveExternal(modelFilesExternalResolver),
+        // schemaHooks.resolveResult(modelFilesResolver)
       ]
     },
     before: {
       all: [
-        schemaHooks.validateQuery(modelFilesQueryValidator),
-        schemaHooks.resolveQuery(modelFilesQueryResolver)
+        // schemaHooks.validateQuery(modelFilesQueryValidator),
+        // schemaHooks.resolveQuery(modelFilesQueryResolver)
       ],
       find: [],
       get: [],
       create: [
-        schemaHooks.validateData(modelFilesDataValidator),
-        schemaHooks.resolveData(modelFilesDataResolver)
+        // schemaHooks.validateData(modelFilesDataValidator),
+        // schemaHooks.resolveData(modelFilesDataResolver)
       ],
       patch: [
-        schemaHooks.validateData(modelFilesPatchValidator),
-        schemaHooks.resolveData(modelFilesPatchResolver)
+        // schemaHooks.validateData(modelFilesPatchValidator),
+        // schemaHooks.resolveData(modelFilesPatchResolver)
       ],
       remove: []
     },
