@@ -11,6 +11,7 @@ export * from './upload-files.class'
 export * from './upload-files.schema'
 
 const folderPath = path.resolve(__dirname + '/../../../uploads/')
+
 const multipartMiddleware = multer({
   storage: multer.diskStorage({
     destination: folderPath,
@@ -35,7 +36,6 @@ export const uploadFiles = (app: Application) => {
         multipartMiddleware.single('uri'),
         async (context, next) => {
           const file = (context.request as any).file
-          console.log('file', file)
           context.request.body = {
             uri: `/uploads/${file.filename}`,
             filename: file.originalname,
