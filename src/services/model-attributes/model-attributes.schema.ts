@@ -10,8 +10,10 @@ import type { ModelAttributesService } from './model-attributes.class'
 // Main data model schema
 export const modelAttributesSchema = Type.Object(
   {
-    id: Type.Number(),
-    text: Type.String()
+    id: Type.String(),
+    model_id: Type.String(),
+    key: Type.String(),
+    value: Type.String()
   },
   { $id: 'ModelAttributes', additionalProperties: false }
 )
@@ -24,7 +26,7 @@ export const modelAttributesExternalResolver = resolve<ModelAttributes, HookCont
 )
 
 // Schema for creating new entries
-export const modelAttributesDataSchema = Type.Pick(modelAttributesSchema, ['text'], {
+export const modelAttributesDataSchema = Type.Pick(modelAttributesSchema, ['model_id', 'key', 'value'], {
   $id: 'ModelAttributesData'
 })
 export type ModelAttributesData = Static<typeof modelAttributesDataSchema>
@@ -40,7 +42,12 @@ export const modelAttributesPatchValidator = getValidator(modelAttributesPatchSc
 export const modelAttributesPatchResolver = resolve<ModelAttributes, HookContext<ModelAttributesService>>({})
 
 // Schema for allowed query properties
-export const modelAttributesQueryProperties = Type.Pick(modelAttributesSchema, ['id', 'text'])
+export const modelAttributesQueryProperties = Type.Pick(modelAttributesSchema, [
+  'id',
+  'model_id',
+  'key',
+  'value'
+])
 export const modelAttributesQuerySchema = Type.Intersect(
   [
     querySyntax(modelAttributesQueryProperties),
