@@ -33,24 +33,27 @@ export const attributes = (app: Application) => {
   app.service(attributesPath).hooks({
     around: {
       all: [
-        schemaHooks.resolveExternal(attributesExternalResolver),
-        schemaHooks.resolveResult(attributesResolver)
+        // schemaHooks.resolveExternal(attributesExternalResolver),
+        // schemaHooks.resolveResult(attributesResolver)
       ]
     },
     before: {
       all: [
-        schemaHooks.validateQuery(attributesQueryValidator),
-        schemaHooks.resolveQuery(attributesQueryResolver)
+        // schemaHooks.validateQuery(attributesQueryValidator),
+        // schemaHooks.resolveQuery(attributesQueryResolver)
       ],
-      find: [],
+      find: [
+        // async (context) => {
+        //   console.log('Before find hook - Paginate set to false')
+        //   context.params.paginate = false
+        //   return context
+        // }
+      ],
       get: [],
-      create: [
-        schemaHooks.validateData(attributesDataValidator),
-        schemaHooks.resolveData(attributesDataResolver)
-      ],
+      create: [],
       patch: [
-        schemaHooks.validateData(attributesPatchValidator),
-        schemaHooks.resolveData(attributesPatchResolver)
+        // schemaHooks.validateData(attributesPatchValidator),
+        // schemaHooks.resolveData(attributesPatchResolver)
       ],
       remove: []
     },

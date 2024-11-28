@@ -11,7 +11,8 @@ import type { AttributesService } from './attributes.class'
 export const attributesSchema = Type.Object(
   {
     id: Type.Number(),
-    text: Type.String()
+    key: Type.String(),
+    value: Type.String()
   },
   { $id: 'Attributes', additionalProperties: false }
 )
@@ -22,7 +23,7 @@ export const attributesResolver = resolve<Attributes, HookContext<AttributesServ
 export const attributesExternalResolver = resolve<Attributes, HookContext<AttributesService>>({})
 
 // Schema for creating new entries
-export const attributesDataSchema = Type.Pick(attributesSchema, ['text'], {
+export const attributesDataSchema = Type.Pick(attributesSchema, ['key', 'value'], {
   $id: 'AttributesData'
 })
 export type AttributesData = Static<typeof attributesDataSchema>
@@ -38,7 +39,7 @@ export const attributesPatchValidator = getValidator(attributesPatchSchema, data
 export const attributesPatchResolver = resolve<Attributes, HookContext<AttributesService>>({})
 
 // Schema for allowed query properties
-export const attributesQueryProperties = Type.Pick(attributesSchema, ['id', 'text'])
+export const attributesQueryProperties = Type.Pick(attributesSchema, ['id', 'key', 'value'])
 export const attributesQuerySchema = Type.Intersect(
   [
     querySyntax(attributesQueryProperties),

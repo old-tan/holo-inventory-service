@@ -16,7 +16,14 @@ export class AttributesService<ServiceParams extends Params = AttributesParams> 
   AttributesData,
   AttributesParams,
   AttributesPatch
-> {}
+> {
+  constructor(options: any) {
+    super({
+      ...options,
+      paginate: false // 全局禁用分页
+    })
+  }
+}
 
 export const getOptions = (app: Application): KnexAdapterOptions => {
   return {
