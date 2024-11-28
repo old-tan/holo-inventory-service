@@ -6,7 +6,6 @@ export async function up(knex: Knex): Promise<void> {
     // table.increments('id')
     table.uuid('id').defaultTo(knex.fn.uuid())
     table.string('model_id')
-    table.string('slot')
     table.string('file_name')
     table.string('url')
     table.timestamp('created_at').defaultTo(knex.fn.now())

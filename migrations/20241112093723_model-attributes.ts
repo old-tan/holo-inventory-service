@@ -3,9 +3,10 @@ import type { Knex } from 'knex'
 
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('model-attributes', (table) => {
-    table.increments('id')
-
-    table.string('text')
+    table.uuid('id').defaultTo(knex.fn.uuid())
+    table.string('model_id')
+    table.string('key')
+    table.string('value')
   })
 }
 
