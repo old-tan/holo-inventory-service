@@ -27,6 +27,11 @@ export const modelsExternalResolver = resolve<Models, HookContext<ModelsService>
 export const modelsDataSchema = Type.Pick(modelsSchema, ['name'], {
   $id: 'ModelsData'
 })
+// Type.Object({
+//   name: Type.String(),
+//   tags: Type.Array(Type.String())
+// })
+
 export type ModelsData = Static<typeof modelsDataSchema>
 export const modelsDataValidator = getValidator(modelsDataSchema, dataValidator)
 export const modelsDataResolver = resolve<Models, HookContext<ModelsService>>({})

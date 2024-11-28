@@ -5,6 +5,7 @@ import type { KnexAdapterParams, KnexAdapterOptions } from '@feathersjs/knex'
 
 import type { Application } from '../../declarations'
 import type { Models, ModelsData, ModelsPatch, ModelsQuery } from './models.schema'
+import { Knex } from 'knex'
 
 export type { Models, ModelsData, ModelsPatch, ModelsQuery }
 
@@ -16,7 +17,12 @@ export class ModelsService<ServiceParams extends Params = ModelsParams> extends 
   ModelsData,
   ModelsParams,
   ModelsPatch
-> {}
+> {
+  // createQuery(params?: ModelsParams | undefined): Knex.QueryBuilder<any, any> {
+  //   const query = super.createQuery(params)
+  //   query.leftJoin()
+  // }
+}
 
 export const getOptions = (app: Application): KnexAdapterOptions => {
   return {
