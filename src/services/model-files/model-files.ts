@@ -1,18 +1,6 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.html
 
-import { hooks as schemaHooks } from '@feathersjs/schema'
-
-import {
-  modelFilesDataValidator,
-  modelFilesPatchValidator,
-  modelFilesQueryValidator,
-  modelFilesResolver,
-  modelFilesExternalResolver,
-  modelFilesDataResolver,
-  modelFilesPatchResolver,
-  modelFilesQueryResolver
-} from './model-files.schema'
-
+import dayjs from 'dayjs'
 import type { Application, HookContext } from '../../declarations'
 import { ModelFilesService, getOptions } from './model-files.class'
 import { modelFilesPath, modelFilesMethods } from './model-files.shared'
@@ -20,6 +8,7 @@ import { modelFilesPath, modelFilesMethods } from './model-files.shared'
 export * from './model-files.class'
 export * from './model-files.schema'
 
+import { removeFile } from '../../hooks/model-files/remove-file'
 // A configure function that registers the service and its hooks via `app.configure`
 export const modelFiles = (app: Application) => {
   // Register our service on the Feathers application
@@ -32,30 +21,25 @@ export const modelFiles = (app: Application) => {
   // Initialize hooks
   app.service(modelFilesPath).hooks({
     around: {
-      all: [
-        // schemaHooks.resolveExternal(modelFilesExternalResolver),
-        // schemaHooks.resolveResult(modelFilesResolver)
-      ]
+      all: []
     },
     before: {
-      all: [
-        // schemaHooks.validateQuery(modelFilesQueryValidator),
-        // schemaHooks.resolveQuery(modelFilesQueryResolver)
-      ],
-      find: [],
+      all: [],
       get: [],
-      create: [
-        // schemaHooks.validateData(modelFilesDataValidator),
-        // schemaHooks.resolveData(modelFilesDataResolver)
-      ],
-      patch: [
-        // schemaHooks.validateData(modelFilesPatchValidator),
-        // schemaHooks.resolveData(modelFilesPatchResolver)
-      ],
-      remove: []
+      create: [],
+      update: [],
+      remove: [
+        async (context: HookContext) => {
+          const id = String(context.id)
+          if (id !== 'null') {
+            removeFile(context)
+          }
+        }
+      ]
     },
     after: {
-      all: []
+      all: [],
+      find: []
     },
     error: {
       all: []

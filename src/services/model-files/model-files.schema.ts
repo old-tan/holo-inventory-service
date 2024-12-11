@@ -13,6 +13,11 @@ export const modelFilesSchema = Type.Object(
     id: Type.String(),
     model_id: Type.String(),
     file_name: Type.String(),
+    thumb: Type.String(),
+    // zip: Type.String(),
+    // zipMd5: Type.String(),
+    modelFolder: Type.String(),
+    aliases: Type.String(),
     url: Type.String(),
     created_at: Type.String(),
     updated_at: Type.String()
@@ -26,9 +31,13 @@ export const modelFilesResolver = resolve<ModelFiles, HookContext<ModelFilesServ
 export const modelFilesExternalResolver = resolve<ModelFiles, HookContext<ModelFilesService>>({})
 
 // Schema for creating new entries
-export const modelFilesDataSchema = Type.Pick(modelFilesSchema, ['model_id', 'file_name', 'url'], {
-  $id: 'ModelFilesData'
-})
+export const modelFilesDataSchema = Type.Pick(
+  modelFilesSchema,
+  ['model_id', 'file_name', 'thumb', 'modelFolder', 'aliases', 'url'],
+  {
+    $id: 'ModelFilesData'
+  }
+)
 export type ModelFilesData = Static<typeof modelFilesDataSchema>
 export const modelFilesDataValidator = getValidator(modelFilesDataSchema, dataValidator)
 export const modelFilesDataResolver = resolve<ModelFiles, HookContext<ModelFilesService>>({})
@@ -46,6 +55,9 @@ export const modelFilesQueryProperties = Type.Pick(modelFilesSchema, [
   // 'id',
   'model_id',
   'file_name',
+  'thumb',
+  'modelFolder',
+  'aliases',
   'url'
 ])
 export const modelFilesQuerySchema = Type.Intersect(
