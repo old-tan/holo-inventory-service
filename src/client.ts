@@ -4,6 +4,14 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { uploadItemClient } from './services/upload-item/upload-item.shared'
+export type {
+  UploadItem,
+  UploadItemData,
+  UploadItemQuery,
+  UploadItemPatch
+} from './services/upload-item/upload-item.shared'
+
 import { uploadFilesClient } from './services/upload-files/upload-files.shared'
 export type {
   UploadFiles,
@@ -74,5 +82,6 @@ export const createClient = <Configuration = any,>(
   client.configure(attributesClient)
   client.configure(userClient)
   client.configure(uploadFilesClient)
+  client.configure(uploadItemClient)
   return client
 }

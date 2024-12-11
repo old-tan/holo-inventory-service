@@ -25,8 +25,9 @@ app.use(errorHandler())
 app.use(parseAuthentication())
 app.use(bodyParser())
 
-// serveStatic uploads
+// serveStatic uploads|temFiles
 app.use(mount('/uploads', serveStatic(path.resolve(__dirname, '../uploads'))))
+app.use(mount('/temFiles', serveStatic(path.resolve(__dirname, '../temFiles'))))
 
 // Configure services and transports
 app.configure(rest())
