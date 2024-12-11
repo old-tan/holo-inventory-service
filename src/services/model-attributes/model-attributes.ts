@@ -1,17 +1,17 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.html
 
-import { hooks as schemaHooks } from '@feathersjs/schema'
+// import { hooks as schemaHooks } from '@feathersjs/schema'
 
-import {
-  modelAttributesDataValidator,
-  modelAttributesPatchValidator,
-  modelAttributesQueryValidator,
-  modelAttributesResolver,
-  modelAttributesExternalResolver,
-  modelAttributesDataResolver,
-  modelAttributesPatchResolver,
-  modelAttributesQueryResolver
-} from './model-attributes.schema'
+// import {
+//   modelAttributesDataValidator,
+//   modelAttributesPatchValidator,
+//   modelAttributesQueryValidator,
+//   modelAttributesResolver,
+//   modelAttributesExternalResolver,
+//   modelAttributesDataResolver,
+//   modelAttributesPatchResolver,
+//   modelAttributesQueryResolver
+// } from './model-attributes.schema'
 
 import type { Application } from '../../declarations'
 import { ModelAttributesService, getOptions } from './model-attributes.class'
@@ -33,24 +33,24 @@ export const modelAttributes = (app: Application) => {
   app.service(modelAttributesPath).hooks({
     around: {
       all: [
-        schemaHooks.resolveExternal(modelAttributesExternalResolver),
-        schemaHooks.resolveResult(modelAttributesResolver)
+        // schemaHooks.resolveExternal(modelAttributesExternalResolver),
+        // schemaHooks.resolveResult(modelAttributesResolver)
       ]
     },
     before: {
       all: [
-        schemaHooks.validateQuery(modelAttributesQueryValidator),
-        schemaHooks.resolveQuery(modelAttributesQueryResolver)
+        // schemaHooks.validateQuery(modelAttributesQueryValidator),
+        // schemaHooks.resolveQuery(modelAttributesQueryResolver)
       ],
       find: [],
       get: [],
       create: [
-        schemaHooks.validateData(modelAttributesDataValidator),
-        schemaHooks.resolveData(modelAttributesDataResolver)
+        // schemaHooks.validateData(modelAttributesDataValidator),
+        // schemaHooks.resolveData(modelAttributesDataResolver)
       ],
       patch: [
-        schemaHooks.validateData(modelAttributesPatchValidator),
-        schemaHooks.resolveData(modelAttributesPatchResolver)
+        // schemaHooks.validateData(modelAttributesPatchValidator),
+        // schemaHooks.resolveData(modelAttributesPatchResolver)
       ],
       remove: []
     },
