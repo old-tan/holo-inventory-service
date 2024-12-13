@@ -10,16 +10,19 @@ export const getAllFilesFlat: any = async (dirPath: any) => {
 
   // 读取目录内容
   const entries = await fs.readdir(dirPath, { withFileTypes: true })
-
-  // 遍历每个条目
+  console.log('entries---', entries)
+  // 遍历每个条目 保留 sofa-cloth/
   for (const entry of entries) {
     const fullPath = path.resolve(dirPath, entry.name)
-    const relativePath = fullPath.replace(path.join(__dirname, '../../'), '')
+    const relativePath = fullPath.replace(path.resolve(dirPath) + '/', '')
+    console.log('fullPath---', fullPath)
+    console.log('resolve-path---', path.resolve(dirPath))
+    console.log('relativePath---', relativePath)
 
     if (entry.isDirectory()) {
       // 递归处理子目录
       const nestedFiles = await getAllFilesFlat(fullPath)
-      filePaths = filePaths.concat(nestedFiles)
+      filePaths = filePaths.concat(nestedFiles.map((nestedFile: any) => `${entry.name}/${nestedFile}`))
     } else {
       // 添加文件路径
       filePaths.push(relativePath)

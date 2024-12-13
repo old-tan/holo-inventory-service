@@ -1,5 +1,5 @@
 const AdmZip = require('adm-zip')
-
+import fs from 'fs'
 import { getAllFilesFlat } from '../hooks/generate-filesFlat'
 export const extractZipWithCleanup = async (filePath: any, outputDir: any) => {
   const zip = new AdmZip(filePath)
@@ -19,6 +19,7 @@ export const extractZipWithCleanup = async (filePath: any, outputDir: any) => {
   })
 
   // 提取到目标目录
+  fs.rmSync(outputDir, { recursive: true, force: true }) // 先清空
   tempZip.extractAllTo(outputDir, true)
   console.log('Extraction completed without hidden files!')
 

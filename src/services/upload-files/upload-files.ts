@@ -37,13 +37,13 @@ export const uploadFiles = (app: Application) => {
           const reqBody = (context.request as any).body
           const { model_id } = reqBody
           const file = (context.request as any).file
+          console.log('file---', file)
 
           const modelFilesService = app.service('model-files')
 
           // unzip ZIP file with cleabup .DS_Store | __MACOSX & get flat file path
           const extractPath = path.join(publicFolder, file.filename.replace('.zip', ''))
           const curFilePaths = await extractZipWithCleanup(file.path, extractPath)
-
           // clear all model-files by model_id
           await modelFilesService.remove(null, {
             adapter: {
@@ -63,7 +63,7 @@ export const uploadFiles = (app: Application) => {
               thumb: '',
               // zip: `/uploads/${file.filename}`,
               // zipMd5: md5,
-              modelFolder: `/temFiles/${file.filename.replace('.zip', '')}`,
+              modelFolder: `/temFiles/${model_id}/${file.originalname.replace('.zip', '')}`,
               url: filePath
             })
           }
