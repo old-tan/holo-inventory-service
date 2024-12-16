@@ -122,6 +122,6 @@ lib/
 
 # upload
 uploads/
-temFiles/
+model_files/
 
 .DS_Store
