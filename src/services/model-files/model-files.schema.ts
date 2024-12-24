@@ -13,12 +13,12 @@ export const modelFilesSchema = Type.Object(
     id: Type.String(),
     model_id: Type.String(),
     file_name: Type.String(),
-    thumb: Type.String(),
     // zip: Type.String(),
     // zipMd5: Type.String(),
     modelFolder: Type.String(),
     aliases: Type.String(),
     url: Type.String(),
+    size: Type.Integer(),
     created_at: Type.String(),
     updated_at: Type.String()
   },
@@ -33,7 +33,7 @@ export const modelFilesExternalResolver = resolve<ModelFiles, HookContext<ModelF
 // Schema for creating new entries
 export const modelFilesDataSchema = Type.Pick(
   modelFilesSchema,
-  ['model_id', 'file_name', 'thumb', 'modelFolder', 'aliases', 'url'],
+  ['model_id', 'file_name', 'modelFolder', 'aliases', 'url', 'size'],
   {
     $id: 'ModelFilesData'
   }
@@ -55,10 +55,10 @@ export const modelFilesQueryProperties = Type.Pick(modelFilesSchema, [
   // 'id',
   'model_id',
   'file_name',
-  'thumb',
   'modelFolder',
   'aliases',
-  'url'
+  'url',
+  'size'
 ])
 export const modelFilesQuerySchema = Type.Intersect(
   [

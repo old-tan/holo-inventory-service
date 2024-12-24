@@ -8,12 +8,12 @@ export async function up(knex: Knex): Promise<void> {
 
     table.string('model_id')
     table.string('file_name')
-    table.string('thumb')
     // table.string('zip')
     // table.string('zipMd5')
     table.string('modelFolder')
     table.string('aliases')
     table.string('url')
+    table.integer('size')
     table.timestamp('created_at').defaultTo(knex.fn.now())
     table.timestamp('updated_at').defaultTo(knex.fn.now())
   })
