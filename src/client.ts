@@ -4,6 +4,14 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { uploadThumbClient } from './services/upload-thumb/upload-thumb.shared'
+export type {
+  UploadThumb,
+  UploadThumbData,
+  UploadThumbQuery,
+  UploadThumbPatch
+} from './services/upload-thumb/upload-thumb.shared'
+
 import { uploadItemClient } from './services/upload-item/upload-item.shared'
 export type {
   UploadItem,
@@ -66,7 +74,7 @@ export type ClientApplication = Application<ServiceTypes, Configuration>
  * @see https://dove.feathersjs.com/api/client.html
  * @returns The Feathers client application
  */
-export const createClient = <Configuration = any,>(
+export const createClient = <Configuration = any>(
   connection: TransportConnection<ServiceTypes>,
   authenticationOptions: Partial<AuthenticationClientOptions> = {}
 ) => {
@@ -83,5 +91,6 @@ export const createClient = <Configuration = any,>(
   client.configure(userClient)
   client.configure(uploadFilesClient)
   client.configure(uploadItemClient)
+  client.configure(uploadThumbClient)
   return client
 }

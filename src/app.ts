@@ -25,16 +25,18 @@ app.use(errorHandler())
 app.use(parseAuthentication())
 app.use(bodyParser())
 
-// serveStatic uploads|temFiles
-app.use(mount('/uploads', serveStatic(path.resolve(__dirname, '../uploads'))))
-app.use(mount('/temFiles', serveStatic(path.resolve(__dirname, '../temFiles'))))
+// serveStatic uploads|model_files
+app.use(mount('/thumbs', serveStatic(path.resolve(__dirname, '../model_thumbs'))))
+app.use(mount('/projects', serveStatic(path.resolve(__dirname, '../model_projects'))))
+app.use(mount('/files', serveStatic(path.resolve(__dirname, '../model_files'))))
 
 // Configure services and transports
 app.configure(rest())
 app.configure(
   socketio({
     cors: {
-      origin: app.get('origins')
+      // origin: app.get('origins'),
+      origin: '*'
     }
   })
 )

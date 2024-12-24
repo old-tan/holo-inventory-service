@@ -1,3 +1,4 @@
+import { uploadThumb } from './upload-thumb/upload-thumb'
 import { uploadItem } from './upload-item/upload-item'
 import { uploadFiles } from './upload-files/upload-files'
 import { user } from './users/users'
@@ -9,6 +10,7 @@ import { models } from './models/models'
 import type { Application } from '../declarations'
 
 export const services = (app: Application) => {
+  app.configure(uploadThumb)
   app.configure(uploadItem)
   app.configure(uploadFiles)
   app.configure(user)
