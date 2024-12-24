@@ -2,7 +2,6 @@
 
 import multer from '@koa/multer'
 import path from 'path'
-import crypto from 'crypto'
 import fs from 'fs'
 // import fs from 'fs/promises'
 
@@ -14,18 +13,12 @@ export * from './upload-item.class'
 export * from './upload-item.schema'
 
 const folderPath = path.resolve(__dirname + '/../../../uploads/')
-const publicFolder = path.join(__dirname, '../../../temFiles/')
+const publicFolder = path.join(__dirname, '../../../model_files/')
 
 const multipartMiddleware = multer({
   storage: multer.diskStorage({
     destination: folderPath,
     filename: (req: any, file: any, cb: any) => {
-      console.log('req---', req.body)
-      // console.log('file---', file)
-      // console.log('filename---', `${req.body.model_id}.${file.originalname}`)
-      // crypto.randomBytes(16, function (err, raw) {
-      //   cb(err, err ? undefined : `${raw.toString('hex')}.${file.originalname}`)
-      // })
       cb(null, `${req.body.model_id}.${file.originalname}`)
     }
   })
@@ -46,41 +39,34 @@ export const uploadItem = (app: Application) => {
           const reqBody = (context.request as any).body
           const { model_id, subPath } = reqBody
           const file = (context.request as any).file
+
           const writePath = path.join(publicFolder, model_id, subPath, file.originalname)
-          const modelFolder = path.join('tempFiles', model_id)
-          const url = path.join('temFiles', model_id, subPath, file.originalname)
+          const modelFolder = path.join('files', model_id, subPath)
+          const url = path.join(subPath, file.originalname)
           const modelFilesService = app.service('model-files')
-          try {
-            // 读取文件内容
-            const data = fs.readFileSync(file.path)
-            // 写入文件
-            fs.writeFileSync(writePath, data, { flag: 'wx' })
-            // console.log('File written successfully to', writePath)
+          // 读取文件内容
+          const data = fs.readFileSync(file.path)
+          // 写入文件
+          fs.writeFileSync(writePath, data, { flag: 'wx' })
+          // console.log('File written successfully to', writePath)
+          // 文件 size
+          const stats = await fs.promises.stat(writePath)
 
-            const curItem = await modelFilesService.create({
-              model_id,
-              file_name: file.originalname,
-              aliases: '',
-              thumb: '',
-              modelFolder,
-              url
-            })
+          const curItem = await modelFilesService.create({
+            model_id,
+            file_name: file.originalname,
+            aliases: '',
+            modelFolder,
+            url,
+            size: stats.size
+          })
 
-            // 返回文件信息
-            context.request.body = {
-              ...curItem
-            }
-          } catch (error) {
-            // 返回错误信息
-            context.status = 400
-            context.body = {
-              error
-            }
-
-            return // 终止请求处理
+          // 返回文件信息
+          context.request.body = {
+            ...curItem
           }
 
-          await next()
+          next()
         }
       ]
     }
