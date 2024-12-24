@@ -44,26 +44,59 @@ export const generateTree: any = async (folderPath: any) => {
   return tree
 }
 
-// export const generateDataTree = (data: any) => {
-//   // 按照 `modelFolder` 进行分组
-//   const folderMap = data.reduce((acc: any, item: any) => {
-//     if (!acc[item.modelFolder]) {
-//       acc[item.modelFolder] = []
-//     }
-//     acc[item.modelFolder].push(item)
-//     return acc
-//   }, {})
+export const buildTreeByFlatData = (objects: any[], baseLevel = 0) => {
+  const tree = {}
 
-//   // 构造树结构
-//   const tree = Object.entries(folderMap).map(([modelFolder, files]) => ({
-//     key: modelFolder,
-//     title: modelFolder,
-//     children: files.map((file: any) => ({
-//       key: file.id,
-//       title: file.url.split('/').pop(), // 文件名作为节点标题
-//       ...file // 包含所有文件属性，便于扩展
-//     }))
-//   }))
+  if (!objects?.length) return []
+  objects.length > 0 &&
+    objects.forEach((item) => {
+      // 移除前缀部分，仅保留从目标层开始的路径
+      const relativePath = item.url.split('/').slice(baseLevel).join('/')
+      const parts = relativePath.split('/')
+      const { id, model_id, aliases } = item
 
-//   return tree
-// }
+      let currentNode: any = tree
+
+      parts.forEach((part: any, index: number) => {
+        const currentKey = parts.slice(0, index + 1).join('/')
+        const isFile = index === parts.length - 1 // 判断是否是文件
+        if (!currentNode[part]) {
+          currentNode[part] = isFile
+            ? {
+                name: part,
+                key: id || currentKey,
+                path: currentKey,
+                id,
+                model_id,
+                aliases,
+                isLeaf: true
+              }
+            : {
+                name: part,
+                key: currentKey,
+                path: currentKey,
+                id: currentKey,
+                model_id,
+                aliases: '',
+                isLeaf: false,
+                children: {}
+              }
+        }
+        if (!isFile) {
+          currentNode = currentNode[part].children // 进入子节点
+        }
+      })
+    })
+
+  // 转换对象树为数组结构
+  function convertToArray(node: any) {
+    return Object.values(node).map((item: any) => {
+      if (item.children) {
+        item.children = convertToArray(item.children)
+      }
+      return item
+    })
+  }
+
+  return convertToArray(tree)
+}

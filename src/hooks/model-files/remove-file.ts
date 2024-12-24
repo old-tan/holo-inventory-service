@@ -9,9 +9,8 @@ export const removeFile = async (context: HookContext) => {
   if (!modelFile || !modelFile.url) {
     throw new Error('No model-file found or path is missing')
   }
-  const { url } = modelFile
-  const filePath = path.join(__dirname, `../../../${url}`)
-
+  const { model_id, url } = modelFile
+  const filePath = path.join(__dirname, `../../../model_files/${model_id}/${url}`)
   // delete current file
   try {
     await fs.access(filePath, fs.constants.F_OK, (err) => {
