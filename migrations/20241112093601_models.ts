@@ -10,6 +10,9 @@ export async function up(knex: Knex): Promise<void> {
     //   .primary()
     //   .defaultTo(knex.raw(`'${nanoid()}'`)) // Use nanoid to generate primary keys
     table.string('name')
+    table.string('thumb')
+    table.string('project_url')
+    table.string('project_name')
     table.timestamp('created_at').defaultTo(knex.fn.now())
     table.timestamp('updated_at').defaultTo(knex.fn.now())
   })

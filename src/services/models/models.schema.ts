@@ -12,6 +12,9 @@ export const modelsSchema = Type.Object(
   {
     id: Type.String(),
     name: Type.String(),
+    thumb: Type.String(),
+    project_url: Type.String(),
+    project_name: Type.String(),
     created_at: Type.String(),
     updated_at: Type.String()
   },
@@ -24,7 +27,7 @@ export const modelsResolver = resolve<Models, HookContext<ModelsService>>({})
 export const modelsExternalResolver = resolve<Models, HookContext<ModelsService>>({})
 
 // Schema for creating new entries
-export const modelsDataSchema = Type.Pick(modelsSchema, ['name'], {
+export const modelsDataSchema = Type.Pick(modelsSchema, ['name', 'thumb', 'project_url', 'project_name'], {
   $id: 'ModelsData'
 })
 // Type.Object({
@@ -45,7 +48,13 @@ export const modelsPatchValidator = getValidator(modelsPatchSchema, dataValidato
 export const modelsPatchResolver = resolve<Models, HookContext<ModelsService>>({})
 
 // Schema for allowed query properties
-export const modelsQueryProperties = Type.Pick(modelsSchema, ['id', 'name'])
+export const modelsQueryProperties = Type.Pick(modelsSchema, [
+  'id',
+  'name',
+  'thumb',
+  'project_url',
+  'project_name'
+])
 export const modelsQuerySchema = Type.Intersect(
   [
     querySyntax(modelsQueryProperties),

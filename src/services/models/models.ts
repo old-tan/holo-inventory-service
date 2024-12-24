@@ -11,6 +11,10 @@ import { modelsPath, modelsMethods } from './models.shared'
 export * from './models.class'
 export * from './models.schema'
 
+import { removeFolder } from '../../hooks/models/remove-folder'
+import { afterGet } from '../../hooks/models/after-get'
+import { buildTreeByFlatData } from '../../hooks/generate-tree'
+
 // A configure function that registers the service and its hooks via `app.configure`
 export const models = (app: Application) => {
   // Register our service on the Feathers application
@@ -25,6 +29,10 @@ export const models = (app: Application) => {
     before: {
       create: [
         async (context: HookContext) => {
+          const { data } = context
+          if (data?.id === '' || data?.id === null || data?.id === undefined) {
+            delete data.id
+          }
           if (context.data.tags) {
             const tags = context.data.tags
             // add tags to custom attr ant insert them into other table
@@ -56,8 +64,10 @@ export const models = (app: Application) => {
               model_id: id
             }
           })
+
           return context
-        }
+        },
+        removeFolder
       ],
       update: [
         async (context: HookContext) => {
@@ -66,6 +76,7 @@ export const models = (app: Application) => {
           // update models
           const nowTime = dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss')
           context.data = {
+            ...context.data,
             id,
             name,
             created_at,
@@ -131,10 +142,11 @@ export const models = (app: Application) => {
           return context
         }
       ],
+      get: [afterGet],
       find: [
         async (context: HookContext) => {
+          const { id } = context.params.query
           let mdoelsData = [...context.result.data]
-
           const newModelsData = await Promise.all(
             mdoelsData.map(async (item: any) => {
               // Query service 'model-attributes' using `id` as `model_id`
@@ -150,11 +162,38 @@ export const models = (app: Application) => {
               }
             })
           )
+          // Query service 'model-files' using `id` as `model_id`
+          const modelMeta =
+            id &&
+            ((await app.service('model-files').find({
+              paginate: false,
+              query: {
+                model_id: String(id)
+              }
+            })) as unknown as {
+              id: string
+              model_id: string
+              file_name: string
+              url: string
+              modelFolder: string
+              size: number
+              aliases: string
+            }[])
+
+          // generate tree by flat modelMeta
+          const tree = await buildTreeByFlatData(modelMeta)
+
           // Attach the related data to the result
-          context.result = {
-            ...context.result,
-            data: newModelsData
-          }
+          context.result = !id
+            ? {
+                ...context.result,
+                data: newModelsData
+              }
+            : {
+                ...((newModelsData.length && newModelsData[0]) || {}),
+                files: modelMeta,
+                tree
+              }
 
           return context
         }
