@@ -123,5 +123,7 @@ lib/
 # upload
 uploads/
 model_files/
+model_projects/
+model_thumbs/
 
 .DS_Store
