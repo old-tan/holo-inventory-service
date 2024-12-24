@@ -7,18 +7,35 @@ import { UploadFilesService, getOptions } from './upload-files.class'
 import { uploadFilesPath, uploadFilesMethods } from './upload-files.shared'
 
 import { extractZipWithCleanup } from '../../hooks/zip-cleanup'
+import { buildTreeByFlatData } from '../../hooks/generate-tree'
 
 export * from './upload-files.class'
 export * from './upload-files.schema'
 
-const folderPath = path.resolve(__dirname + '/../../../uploads/')
-const publicFolder = path.join(__dirname, '../../../temFiles/')
+const modelFilePath = path.join(__dirname, '../../../model_files/')
+const modelZipPath = path.resolve(__dirname + '/../../../uploads/')
+const projectPath = path.join(__dirname, '../../../model_projects/')
 
 const multipartMiddleware = multer({
   storage: multer.diskStorage({
-    destination: folderPath,
+    destination: (req: any, file: any, cb: any) => {
+      const { isProject } = req.body
+      // 判断是否是源文件
+      if (isProject) {
+        cb(null, projectPath)
+      } else {
+        cb(null, modelZipPath)
+      }
+    },
     filename: (req: any, file: any, cb: any) => {
-      cb(null, `${req.body.model_id}`)
+      const { isProject } = req.body
+      const extension = file.mimetype.split('/')[1]
+      // 判断是否是源文件
+      if (isProject) {
+        cb(null, `${req.body.model_id}.${extension}`)
+      } else {
+        cb(null, `${req.body.model_id}`)
+      }
     }
   })
 })
@@ -32,58 +49,78 @@ export const uploadFiles = (app: Application) => {
     events: [],
     koa: {
       before: [
-        multipartMiddleware.single('uri'),
+        multipartMiddleware.single('model'),
         async (context, next) => {
           const reqBody = (context.request as any).body
-          const { model_id } = reqBody
+          const { model_id, isProject } = reqBody
           const file = (context.request as any).file
-          console.log('file---', file)
-
           const modelFilesService = app.service('model-files')
+          const modelsService = app.service('models')
 
-          // unzip ZIP file with cleabup .DS_Store | __MACOSX & get flat file path
-          const extractPath = path.join(publicFolder, file.filename.replace('.zip', ''))
-          const curFilePaths = await extractZipWithCleanup(file.path, extractPath)
-          // clear all model-files by model_id
-          await modelFilesService.remove(null, {
-            adapter: {
-              multi: true
-            },
-            query: {
-              model_id
+          // update models service project_url
+          if (isProject) {
+            const project_url = `projects/${file.filename}`
+            const project_name = file.originalname
+            await modelsService.patch(model_id, { project_url, project_name })
+
+            context.request.body = {
+              id: model_id,
+              name: file.filename,
+              project_name: file.originalname,
+              project_url,
+              size: file.size
             }
-          })
-          // create/update model-files
-          for (const filePath of curFilePaths) {
-            const fileName = filePath.split('/').pop()
-            await modelFilesService.create({
-              model_id,
-              file_name: fileName,
-              aliases: '',
-              thumb: '',
-              // zip: `/uploads/${file.filename}`,
-              // zipMd5: md5,
-              modelFolder: `/temFiles/${model_id}/${file.originalname.replace('.zip', '')}`,
-              url: filePath
+          } else {
+            // unzip ZIP file with cleabup .DS_Store | __MACOSX & get flat file path
+            const extractPath = path.join(modelFilePath, file.filename)
+            const curFilePaths = await extractZipWithCleanup(file.path, extractPath)
+
+            // clear all model-files by model_id
+            await modelFilesService.remove(null, {
+              adapter: {
+                multi: true
+              },
+              query: {
+                model_id
+              }
             })
+            // create/update model-files
+            for (const fileItem of curFilePaths) {
+              const { path: filePath, size } = fileItem
+              const fileName = filePath.split('/').pop()
+              await modelFilesService.create({
+                model_id,
+                file_name: fileName,
+                aliases: '',
+                modelFolder: `files/${model_id}/${file.originalname.replace('.zip', '')}`,
+                url: filePath,
+                size
+              })
+            }
+
+            // find model files by model_id
+            const modelFiles = (await modelFilesService.find({
+              paginate: false,
+              query: { model_id }
+            })) as unknown as {
+              id: string
+              model_id: string
+              file_name: string
+              url: string
+              modelFolder: string
+              size: number
+              aliases: string
+              created_at: string
+              updated_at: string
+            }[] // 强制设置 TypeScript 类型
+
+            const tree = await buildTreeByFlatData(modelFiles)
+
+            context.request.body = {
+              tree
+            }
           }
 
-          // find model files by model_id
-          const modelFiles = (await modelFilesService.find({
-            query: { model_id },
-            paginate: false // 禁用分页以获取所有匹配记录
-          })) as unknown as {
-            id: string
-            model_id: string
-            file_name: string
-            url: string
-            created_at: string
-            updated_at: string
-          }[] // 强制设置 TypeScript 类型
-
-          context.request.body = {
-            modelFiles: [...modelFiles]
-          }
           next()
         }
       ]
@@ -119,6 +156,6 @@ declare module '../../declarations' {
 }
 
 // calc MD5 by crypto [去掉]
-// const zipFilePath = path.join(folderPath, file.filename)
+// const zipFilePath = path.join(modelZipPath, file.filename)
 // const fileBuffer = await fs.promises.readFile(zipFilePath)
 // const md5 = crypto.createHash('md5').update(fileBuffer).digest('hex')
