@@ -1,7 +1,7 @@
 import { app } from '../../app'
 import type { HookContext } from '../../declarations'
-import path from 'path'
 export const afterGet = async (context: HookContext) => {
+  console.log('enter-get------', context)
   const { id } = context
 
   try {
@@ -54,13 +54,6 @@ export const afterGet = async (context: HookContext) => {
       baseUrl,
       name: models.length === 1 ? models.join() : models || '',
       textureNames
-      // ...context.result,
-      // tags,
-      // meta: {
-      //   baseUrl,
-      //   name: models.length === 1 ? models.join() : models || '',
-      //   textureNames
-      // }
     }
   } catch (error) {
     // 返回错误信息

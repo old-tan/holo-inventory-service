@@ -1,6 +1,7 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.html
 
 import dayjs from 'dayjs'
+import knex from 'knex'
 
 import type { HookContext } from '../../declarations'
 
@@ -39,6 +40,14 @@ export const models = (app: Application) => {
             context.cusData = tags
             // extract tags and delete it avoid insert into models table
             delete context.data.tags
+          }
+        }
+      ],
+      find: [
+        async (context: HookContext) => {
+          if (context.params?.query.tags) {
+            context.custonTags = context.params?.query.tags
+            delete context.params?.query.tags
           }
         }
       ],
@@ -145,11 +154,32 @@ export const models = (app: Application) => {
       get: [afterGet],
       find: [
         async (context: HookContext) => {
+          const query = context.service.db(context.params).toSQL()
+          console.log('find-sql---', query)
+
+          // // 获取所有满足条件的记录
+          // const queryPromises = context.customTags.map((item: any) => {
+          //   const { key, value } = item
+          //   return app.service('model-attributes').find({
+          //     query: { key, value },
+          //     paginate: false
+          //   })
+          // })
+          // // 合并所有查询结果
+          // const modelAttributes = await Promise.all(queryPromises)
+          // const results = modelAttributes.flat()
+
+          // if (context.customTags) {
+          //   delete context.customTags
+          // }
           const { id } = context.params.query
-          let mdoelsData = [...context.result.data]
+          // let modelsData = results.length
+          //   ? [...context.result.data].filter((item) => results.some((attr) => attr.model_id === item.id))
+          //   : [...context.result.data]
+          let modelsData = [...context.result.data]
           const newModelsData = await Promise.all(
-            mdoelsData.map(async (item: any) => {
-              // Query service 'model-attributes' using `id` as `model_id`
+            modelsData.map(async (item: any) => {
+              // 查询模型 标签
               const modelAttributesTags = await app.service('model-attributes').find({
                 query: {
                   model_id: item.id
@@ -162,7 +192,7 @@ export const models = (app: Application) => {
               }
             })
           )
-          // Query service 'model-files' using `id` as `model_id`
+          // 处理 model-files 树结构 [tree]
           const modelMeta =
             id &&
             ((await app.service('model-files').find({
@@ -179,8 +209,6 @@ export const models = (app: Application) => {
               size: number
               aliases: string
             }[])
-
-          // generate tree by flat modelMeta
           const tree = await buildTreeByFlatData(modelMeta)
 
           // Attach the related data to the result

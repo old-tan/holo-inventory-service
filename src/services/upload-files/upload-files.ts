@@ -73,6 +73,7 @@ export const uploadFiles = (app: Application) => {
           } else {
             // unzip ZIP file with cleabup .DS_Store | __MACOSX & get flat file path
             const extractPath = path.join(modelFilePath, file.filename)
+            console.log('extractPath---', extractPath)
             const curFilePaths = await extractZipWithCleanup(file.path, extractPath)
 
             // clear all model-files by model_id
